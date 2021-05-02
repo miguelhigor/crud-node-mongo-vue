@@ -9,19 +9,21 @@ class ClientsController {
 
         const clientsService = new ClientsService();
         
-        const { CPF, name, email, phone } = req.body;
-        const client = await clientsService.create({
-            CPF, 
-            name, 
-            email, 
-            phone
-        });
+        const clientEntry = req.body;
 
-        if (client){
+        try{
+            const client = await clientsService.create(clientEntry, res);
             res.status(200).json(client);
-        } else {
-            res.status(400).json({message: "Error"})
+
+        }catch(e){
+
+            console.log(e)
+            res.status(400).json({"message": e})
         }
+
+        // if (client){
+        // } else {
+        // }
 
     }
 

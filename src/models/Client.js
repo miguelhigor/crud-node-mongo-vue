@@ -2,13 +2,6 @@ import mongoose from "mongoose";
 
 const ClientSchema = new mongoose.Schema({
 
-    id: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        unique: true,
-        auto: true
-    },
-
     CPF: {
         type: String,
         required: true,
@@ -33,7 +26,8 @@ const ClientSchema = new mongoose.Schema({
         unique: false
     }
 },
-{ collection : 'clients' })
+{ collection : 'Clients' },
+{versionKey: false})
 
 const Client = mongoose.model('Client', ClientSchema);
 
