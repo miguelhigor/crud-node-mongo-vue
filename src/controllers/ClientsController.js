@@ -31,7 +31,7 @@ class ClientsController {
         const clientsList = await clientsService.listAllClients();
 
         if (clientsList){
-            res.status(200).json(client);
+            res.status(200).json(clientsList);
         } else {
             res.status(400).json({message: "Error"})
         }

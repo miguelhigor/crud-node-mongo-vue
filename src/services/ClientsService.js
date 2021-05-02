@@ -1,29 +1,33 @@
+import { Client } from "../models/client.js"
 
 
 class ClientsService {
 
     async create ({ CPF, name, email, phone }) {
 
-        return { CPF, name, email, phone }
+        const client = await Client.create({CPF, name, email, phone})
+        return client
         
     }
 
     async listAllClients () {
 
-        return { "message": "Here goes all the clients on the database!"}
+        const clients = await Client.find({})
+        return clients 
 
     }
 
     async update ({ CPF, name, email, phone }) {
 
-        return { CPF, name, email, phone }
+        const client = await Client.findOne({CPF}).update({ CPF, name, email, phone })
+        return client 
 
     }
 
-    async deleteClient (client) {
+    async deleteClient ({ CPF, name, email, phone }) {
 
-        console.log(client)
-        return {"message": `Client ${client.CPF} deleted!`}
+        const client = await Client.deleteOne({CPF})
+        return client 
 
     }
 }
