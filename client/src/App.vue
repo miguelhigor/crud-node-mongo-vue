@@ -112,7 +112,7 @@ export default {
   
         const res = await axios.put('api/clientes/' + _id, { name, CPF, email, phone })
           .catch((err)=>{
-              window.alert(`${err.response.data[0].message}`)
+              window.alert(`${err.response.data[0].message}`);
           })
 
         if (res) {

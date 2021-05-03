@@ -1,9 +1,10 @@
 import express from "express";
-import morgan from "morgan"
-import cors from "cors"
+import morgan from "morgan";
+import cors from "cors";
+import path from "path";
 
 import { routes } from "./routes.js";
-import "./database/index.js"
+import "./database/index.js";
 
 const app = express();
 
@@ -12,5 +13,12 @@ app.use(cors());
 app.use(morgan('tiny'));
 app.use('/api/clientes', routes);
 
-app.listen(5555, () => {console.log("Server running on port 5555...")})
+if(process.env.NODE_ENV === "production"){
+    app.use(express.static("client/dist"));
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(_dirname, "client", "dist", "index.html"));
+    })
+}
+
+app.listen(5555, () => {console.log("Server running on port 5555...")});
 

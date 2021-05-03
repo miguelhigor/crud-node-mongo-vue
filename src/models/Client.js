@@ -27,7 +27,7 @@ const ClientSchema = new mongoose.Schema({
     }
 },
 { collection : 'Clients' },
-{versionKey: false})
+{versionKey: false});
 
 const Client = mongoose.model('Client', ClientSchema);
 

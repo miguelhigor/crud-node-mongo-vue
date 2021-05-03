@@ -17,8 +17,7 @@ class ClientsController {
 
         }catch(error){
 
-            console.log(error)
-            res.status(400).json(error)
+            res.status(400).json(error);
         }
 
 
@@ -34,7 +33,7 @@ class ClientsController {
             
         } catch (error) {
             
-            res.status(400).json({message: "Não foi possível carregar clientes"})
+            res.status(400).json({message: "Não foi possível carregar clientes"});
         }
 
     }
@@ -72,7 +71,7 @@ class ClientsController {
             
         } catch (error) {
             
-            res.status(400).json({message: "Não foi possível excluir cliente"})
+            res.status(400).json({message: "Não foi possível excluir cliente"});
         }
 
     }
