@@ -7,7 +7,7 @@ const routes = Router();
 // Client routes list
 routes.get('/', clientsController.getAllClients);
 routes.post('/', clientsController.create);
-routes.put('/:id', clientsController.update);
+routes.put('/:_id', clientsController.update);
 routes.delete('/:_id', clientsController.delete);
 
 

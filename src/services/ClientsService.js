@@ -4,6 +4,7 @@ class ClientsService {
     async create (clientEntry) {
 
         const { CPF, name, email, phone } = clientEntry
+        console.log(clientEntry)
 
         const isCpfValid = validateCPF(CPF);
         const isNameValid = validateName(name);
@@ -11,6 +12,8 @@ class ClientsService {
         const isPhoneValid = validatePhone(phone);
 
         const validations = allValidations(isCpfValid, isNameValid, isEmailValid, isPhoneValid);
+
+        console.log(validations)
 
         const errors = validations.filter(field => !field.valid)
         const existsErrors = errors.length
@@ -35,9 +38,9 @@ class ClientsService {
 
     }
 
-    async update (clientEntry) {
+    async update (_id, clientEntry) {
 
-        const { _id, CPF, name, email, phone } = clientEntry
+        const { CPF, name, email, phone } = clientEntry
 
         const isCpfValid = validateCPF(CPF);
         const isNameValid = validateName(name);
@@ -55,7 +58,7 @@ class ClientsService {
 
         }else{
 
-            const client = await Client.findOne({_id}).update({ CPF, name, email, phone })
+            const client = await Client.findOne({_id}).updateOne({ CPF, name, email, phone })
             return client 
 
         }
@@ -129,8 +132,8 @@ function validateName (name) {
     const regexChar = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
     if(regexChar.test(name)) return false
 
-    const regexNumber = /[0-9]+$/;
-    if(regexNumber.test(name)) return false
+    const regexNumber = /^([^0-9]*)$/
+    if(!regexNumber.test(name)) return false
     
 
     // Should exist at least two names (first and last)
@@ -164,10 +167,10 @@ function validateEmail (email) {
 function validatePhone (phone) {
 
     // It should contain only numbers and have at max 11 digits long
-    const regexNumber = /^[^0-9]+$/;
+    const regexNumber = /^([^0-9]*)$/
     if(regexNumber.test(phone)) return false
 
-    if(phone.length > 11) return false
+    if(phone.length != 11) return false
 
     return true
 
@@ -180,19 +183,19 @@ function allValidations (isCpfValid, isNameValid, isEmailValid, isPhoneValid) {
         {
             name: 'CPF',
             valid: isCpfValid,
-            message: 'Invalid CPF'
+            message: 'CPF inválido'
         },{
             name: 'name',
             valid: isNameValid,
-            message: 'Invalid name'
+            message: 'Nome Inválido'
         },{
             name: 'email',
             valid: isEmailValid,
-            message: 'Invalid email'
+            message: 'E-mail inválido'
         },{
             name: 'phone',
             valid: isPhoneValid,
-            message: 'Invalid phone'
+            message: 'Telefone Inválido'
         }
     ]
 

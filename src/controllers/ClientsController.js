@@ -15,10 +15,10 @@ class ClientsController {
             const client = await clientsService.create(clientEntry);
             res.status(200).json(client);
 
-        }catch(e){
+        }catch(error){
 
-            console.log(e)
-            res.status(400).json({"message": e})
+            console.log(error)
+            res.status(400).json(error)
         }
 
 
@@ -27,29 +27,36 @@ class ClientsController {
     async getAllClients (req, res) {
     
         const clientsService = new ClientsService();
-        const clientsList = await clientsService.listAllClients();
-
-        if (clientsList){
-            res.status(200).json(clientsList);
-        } else {
-            res.status(400).json({message: "Error"})
-        }
         
+        try {
+            const clientsList = await clientsService.listAllClients();
+            res.status(200).json(clientsList);
+            
+        } catch (error) {
+            
+            res.status(400).json({message: "Não foi possível carregar clientes"})
+        }
+
     }
 
     async update (req, res) {
 
         const clientsService = new ClientsService();
-
+        const _id = req.params;
         const clientEntry = req.body;
-        const client = await clientsService.update(clientEntry);
         
-        if (client){
+        
+        try {
+            
+            const client = await clientsService.update(_id, clientEntry);
             res.status(200).json(client);
-        } else {
-            res.status(400).json({message: "Error"})
-        }
 
+        } catch (error) {
+            
+            res.status(400).json(error);
+        }
+        
+  
     }
 
 
@@ -58,12 +65,14 @@ class ClientsController {
         const _id = req.params;
 
         const clientsService = new ClientsService();
-        const client = await clientsService.deleteClient({ _id });
-
-        if (client){
+        
+        try {
+            const client = await clientsService.deleteClient({ _id });
             res.status(200).json(client);
-        } else {
-            res.status(400).json({message: "Error"})
+            
+        } catch (error) {
+            
+            res.status(400).json({message: "Não foi possível excluir cliente"})
         }
 
     }
