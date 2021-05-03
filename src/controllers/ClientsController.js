@@ -13,7 +13,7 @@ class ClientsController {
 
         try{
             const client = await clientsService.create(clientEntry);
-            res.status(200).json(client);
+            res.status(201).json(client);
 
         }catch(error){
 
