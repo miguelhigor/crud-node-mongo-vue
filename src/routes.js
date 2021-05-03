@@ -4,11 +4,11 @@ import { ClientsController } from "./controllers/ClientsController.js";
 const clientsController = new ClientsController();
 const routes = Router();
 
-// Routes list
-routes.get('/clientes', clientsController.getAllClients);
-routes.post('/clientes', clientsController.create);
-routes.put('/clientes', clientsController.update);
-routes.delete('/clientes', clientsController.delete);
+// Client routes list
+routes.get('/', clientsController.getAllClients);
+routes.post('/', clientsController.create);
+routes.put('/:id', clientsController.update);
+routes.delete('/:_id', clientsController.delete);
 
 
 export { routes }

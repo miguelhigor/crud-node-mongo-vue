@@ -1,5 +1,4 @@
 import { Client } from "../models/client.js"
-import mongoose from "mongoose"
 class ClientsService {
 
     async create (clientEntry) {
@@ -27,8 +26,6 @@ class ClientsService {
 
         }
 
-
-        
     }
 
     async listAllClients () {
@@ -38,16 +35,36 @@ class ClientsService {
 
     }
 
-    async update ({ CPF, name, email, phone }) {
+    async update (clientEntry) {
 
-        const client = await Client.findOne({CPF}).update({ CPF, name, email, phone })
-        return client 
+        const { _id, CPF, name, email, phone } = clientEntry
+
+        const isCpfValid = validateCPF(CPF);
+        const isNameValid = validateName(name);
+        const isEmailValid = validateEmail(email);
+        const isPhoneValid = validatePhone(phone);
+
+        const validations = allValidations(isCpfValid, isNameValid, isEmailValid, isPhoneValid);
+
+        const errors = validations.filter(field => !field.valid)
+        const existsErrors = errors.length
+
+        if (existsErrors){
+            
+            throw(errors)
+
+        }else{
+
+            const client = await Client.findOne({_id}).update({ CPF, name, email, phone })
+            return client 
+
+        }
 
     }
 
-    async deleteClient ({ CPF, name, email, phone }) {
+    async deleteClient ({ _id }) {
 
-        const client = await Client.deleteOne({CPF})
+        const client = await Client.deleteOne({ _id })
         return client 
 
     }

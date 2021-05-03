@@ -12,7 +12,7 @@ class ClientsController {
         const clientEntry = req.body;
 
         try{
-            const client = await clientsService.create(clientEntry, res);
+            const client = await clientsService.create(clientEntry);
             res.status(200).json(client);
 
         }catch(e){
@@ -21,9 +21,6 @@ class ClientsController {
             res.status(400).json({"message": e})
         }
 
-        // if (client){
-        // } else {
-        // }
 
     }
 
@@ -44,13 +41,8 @@ class ClientsController {
 
         const clientsService = new ClientsService();
 
-        const { CPF, name, email, phone } = req.body;
-        const client = await clientsService.update({
-            CPF, 
-            name, 
-            email, 
-            phone
-        });
+        const clientEntry = req.body;
+        const client = await clientsService.update(clientEntry);
         
         if (client){
             res.status(200).json(client);
@@ -63,10 +55,10 @@ class ClientsController {
 
     async delete (req, res) {
 
-        const { CPF } = req.body;
+        const _id = req.params;
 
         const clientsService = new ClientsService();
-        const client = await clientsService.deleteClient({CPF});
+        const client = await clientsService.deleteClient({ _id });
 
         if (client){
             res.status(200).json(client);
