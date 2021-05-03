@@ -1,4 +1,4 @@
-import { Client } from "../models/client.js";
+import { Client } from "../models/Client.js";
 class ClientsService {
 
     async create (clientEntry) {
