@@ -6,10 +6,10 @@
     </h1>
     <div class="field has-addons">
       <div class="control is-expanded" id="inputBox">
-        <input class="input" type="text" v-model="newClient.name" placeholder="Nome" required>
-        <input class="input" type="text" v-model="newClient.CPF" placeholder="CPF" v-mask="'###.###.###-##'" required>
-        <input class="input" type="email" v-model="newClient.email" placeholder="E-mail" required>
-        <input class="input" type="text" v-model="newClient.phone" placeholder="Telefone" v-mask="'(##) # ####-####'" required>
+        <input class="input" maxlength="50" type="text" v-model="newClient.name" placeholder="Nome">
+        <input class="input" type="text" v-model="newClient.CPF" placeholder="CPF" v-mask="'###.###.###-##'">
+        <input class="input" maxlength="50" type="email" v-model="newClient.email" placeholder="E-mail">
+        <input class="input" type="text" v-model="newClient.phone" placeholder="Telefone" v-mask="'(##) # ####-####'">
 
       </div>
     </div>
@@ -20,7 +20,11 @@
 
     <div class="notification" v-for="(client, i) in clients" :key="client._id">
       <div class="columns">
-        <input class="column input" v-if="selected._id == client._id" v-model="editedClient" />
+        <input class="column input" maxlength="50" type="text" placeholder="Nome" v-if="selected._id == client._id" v-model="editedClient.name" />
+        <input class="column input" type="text" placeholder="CPF" v-mask="'###.###.###-##'" v-if="selected._id == client._id" v-model="editedClient.CPF" />
+        <input class="column input" maxlength="50" type="email" placeholder="E-mail" v-if="selected._id == client._id" v-model="editedClient.email" />
+        <input class="column input" type="text" placeholder="Telefone" v-mask="'(##) # ####-####'" v-if="selected._id == client._id" v-model="editedClient.phone" />
+
         <p v-else class="column">
           <span id="tag" class="tag is-primary"> {{ i + 1 }} </span>
             {{ client.name }}
@@ -61,6 +65,7 @@ export default {
       selected: {}
     };
   },
+
   async mounted () {
 
     // Get on load page
@@ -68,20 +73,56 @@ export default {
     this.clients = res.data;
 
   },
+
   methods: {
     async addClient() {
-      
-      const { name, CPF, email, phone } = this.newClient;
 
-      if(name == "" || CPF == "" || email == "" || phone == "") window.alert('Existem campos obrigatórios não preenchidos')
-      await axios.post('api/clientes/',{ name, CPF, email, phone })
+      if (this.basicValidation(this.newClient)){
+        
+        this.newClient.phone = this.newClient.phone.replace(/\D/g, "");
+        const { name, CPF, email, phone } = this.newClient;
+  
+        const res = await axios.post('api/clientes/', { name, CPF, email, phone })
+          .catch((err)=>{
+            window.alert(`${err.response.data[0].message}`)
+          })
+
+        if(res) {
+          
+          this.clients.push({ name, CPF, email, phone });
+          this.selected._id = ""
+          this.newClient = {
+            name: "",
+            CPF: "",
+            email: "",
+            phone: ""
+          }
+        }
+
+      }
+
+    },
+
+    async updateClient(client, i) {
+
+      if (this.basicValidation(client)){
       
-      this.clients.push({ name, CPF, email, phone });
-      this.newClient = {
-        name: "",
-        CPF: "",
-        email: "",
-        phone: 0
+        client.phone = client.phone.replace(/\D/g, "");
+        const { _id, name, CPF, email, phone } = client;
+  
+        const res = await axios.put('api/clientes/' + _id, { name, CPF, email, phone })
+          .catch((err)=>{
+              window.alert(`${err.response.data[0].message}`)
+          })
+
+        if (res) {
+          
+          this.clients[i] = client;
+          this.unselect();
+
+        }
+        
+      
       }
 
     },
@@ -95,15 +136,73 @@ export default {
 
     select(client) {
       this.selected = client;
-      this.editedClient = client.name;
+      this.editedClient = client;
     },
 
-    unselect () {
+    unselect() {
       this.selected = {};
-      this.editedClient = ""
+      this.editedClient = "";
+    },
+
+    basicValidation (client) {
+
+      const { name, CPF, email, phone } = client;
+
+
+      // Checking if there's an empty field
+      if (name == "") {
+        window.alert('Campo nome não preenchido');
+        return false
+      }
+
+      if (CPF == ""){
+        window.alert('Campo CPF não preenchido');
+        return false
+      }
+
+      if (email == "") {
+        window.alert('Campo e-mail não preenchido');
+        return false
+      } 
+
+      if (phone == "") {
+        window.alert('Campo telefone não preenchido');
+        return false
+      }
+      
+
+      // checking if the pearson has at leat two names
+      if (name.split(" ").length < 2) {
+        window.alert('Campo nome deve conter ao menos dois nomes');
+        return false
+      }
+
+      // Checking if email have only one @ symbol
+      let substringsEmail = email.split('@')
+      if(substringsEmail.length != 2) {
+        window.alert('E-mail inválido');
+        return false
+      }
+
+      // checking if CPF has the right amount of char
+      if (CPF.length != 14){
+        console.log(CPF.length)
+        window.alert('CPF inválido');
+        return false
+      }
+      
+      // checking if phone has the right amount of char
+      if (phone.length != 16){
+        window.alert('Telefone inválido');
+        return false
+      }
+      
+      
+      return true
     }
   }
 };
+
 
 </script>
 
@@ -112,18 +211,22 @@ export default {
 #app {
   margin: auto;
   margin-top: 3rem;
-  max-width: 700px;
+  max-width: 900px;
 }
 
 #addButton {
   margin-bottom: 3rem;
 }
 
-.input{
-  margin-bottom: 0.5rem;
+.icon {
+  margin: 0.5rem;
 }
 
-#deleteButton:hover {
+.input{
+  margin: 0.5rem;
+}
+
+.material-icons:hover {
   cursor: pointer;
 }
 
