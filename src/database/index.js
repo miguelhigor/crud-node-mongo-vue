@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const url = process.env.MONGO_URI || "mongodb+srv://higor:higor@cluster0.kwl6x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const url = process.env.MONGO_URI || "mongodb://localhost:27017/";
 
 const options = {
     useNewUrlParser: true,
